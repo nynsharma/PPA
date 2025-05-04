@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Process Plant Operations System</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f3f4f6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    header {
+      background-color: #1e40af;
+      color: white;
+      padding: 16px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    
+    .content-wrapper {
+      display: flex;
+      padding: 24px 0;
+    }
+    
+    aside {
+      flex: 0 0 250px;
+      margin-right: 24px;
+    }
+    
+    main {
+      flex: 1;
+    }
+    
+    nav {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    nav button {
+      width: 100%;
+      padding: 12px 16px;
+      text-align: left;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+    }
+    
+    nav button.active {
+      background-color: #dbeafe;
+      color: #1e40af;
+      font-weight: 500;
+    }
+    
+    nav button:hover:not(.active) {
+      background-color: #f9fafb;
+    }
+    
+    nav button span {
+      margin-right: 12px;
+      font-size: 18px;
+    }
+    
+    .panel {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 24px;
+    }
+    
+    .panel h2 {
+      margin-top: 0;
+      margin-bottom: 24px;
+      font-size: 24px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .stat-card {
+      padding: 16px;
+      border-radius: 8px;
+    }
+    
+    .stat-card.blue {
+      background-color: #dbeafe;
+    }
+    
+    .stat-card.green {
+      background-color: #dcfce7;
+    }
+    
+    .stat-card.yellow {
+      background-color: #fef9c3;
+    }
+    
+    .stat-card h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .stat-card p.big {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 0;
+    }
+    
+    .stat-card p.small {
+      font-size: 14px;
+      color: #4b5563;
+      margin: 4px 0 0 0;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+    }
+    
+    table th {
+      text-align: left;
+      padding: 12px 16px;
+      background-color: #f9fafb;
+      font-weight: 500;
+    }
+    
+    table td {
+      padding: 12px 16px;
+      border-top: 1px solid #e5e7eb;
+    }
+    
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    
+    .card {
+      background-color: #f9fafb;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+    
+    .card-item {
+      margin-bottom: 12px;
+    }
+    
+    .card-item p {
+      margin: 0 0 4px 0;
+    }
+    
+    .card-item p.title {
+      font-weight: 500;
+    }
+    
+    .status-running {
+      color: #059669;
+    }
+    
+    .status-standby {
+      color: #d97706;
+    }
+    
+    .form-row {
+      margin-bottom: 24px;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    
+    button.btn {
+      padding: 10px 24px;
+      background-color: #1e40af;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    
+    button.btn:hover {
+      background-color: #1c3879;
+    }
+    
+    .btn-add {
+      padding: 8px 12px;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .sop-section {
+      margin-bottom: 24px;
+    }
+    
+    .sop-header {
+      background-color: #dbeafe;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+    
+    .sop-header .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    
+    .sop-header p.label {
+      font-size: 14px;
+      font-weight: 500;
+      margin: 0 0 4px 0;
+    }
+    
+    .sop-header p.value {
+      margin: 0;
+    }
+    
+    .hide {
+      display: none;
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .content-wrapper {
+        flex-direction: column;
+      }
+      
+      aside {
+        flex: auto;
+        margin-right: 0;
+        margin-bottom: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Process Plant Operations</h1>
+      <div>
+        <span style="opacity: 0.8; font-size: 14px;">Last Report: 22-04-2025</span>
+      </div>
+    </div>
+  </header>
+  
+  <div class="container content-wrapper">
+    <aside>
+      <nav>
+        <ul>
+          <li>
+            <button class="active" onclick="showPanel('dashboard')">
+              <span>📊</span> Dashboard
+            </button>
+          </li>
+          <li>
+            <button onclick="showPanel('new-report')">
+              <span>➕</span> New Report
+            </button>
+          </li>
+          <li>
+            <button onclick="showPanel('reports')">
+              <span>📝</span> Reports
+            </button>
+          </li>
+          <li>
+            <button onclick="showPanel('sop')">
+              <span>📚</span> SOP
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+    
+    <main>
+      <!-- Dashboard Panel -->
+      <div id="dashboard" class="panel">
+        <h2>Plant Operations Dashboard</h2>
+        
+        <div class="stats-grid">
+          <div class="stat-card blue">
+            <h3>Current Shift</h3>
+            <p class="big">Morning</p>
+            <p class="small">Incharge: John Smith</p>
+          </div>
+          
+          <div class="stat-card green">
+            <h3>Production Status</h3>
+            <p class="big">48.5/50 Tons</p>
+            <p class="small">Product Output</p>
+          </div>
+          
+          <div class="stat-card yellow">
+            <h3>Safety Status</h3>
+            <p class="big">100%</p>
+            <p class="small">PPE Compliance</p>
+          </div>
+        </div>
+        
+        <h3>Recent Activities</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Activity</th>
+              <th>Status</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>06:00</td>
+              <td>Pre-start checks</td>
+              <td>Completed</td>
+              <td>OK</td>
+            </tr>
+            <tr>
+              <td>07:00</td>
+              <td>Equipment startup</td>
+              <td>Completed</td>
+              <td>All normal</td>
+            </tr>
+            <tr>
+              <td>08:30</td>
+              <td>Material feed start</td>
+              <td>Completed</td>
+              <td>Steady</td>
+            </tr>
+            <tr>
+              <td>10:00</td>
+              <td>Sampling</td>
+              <td>Completed</td>
+              <td>Within spec</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div class="grid-2">
+          <div>
+            <h3>Equipment Status</h3>
+            <div class="card">
+              <div class="card-item">
+                <p class="title">Pump P-101</p>
+                <p><span class="status-running">Running</span> • No issues</p>
+              </div>
+              
+              <div class="card-item">
+                <p class="title">Compressor C-201</p>
+                <p><span class="status-running">Running</span> • Minor vibration, maintenance notified</p>
+              </div>
+              
+              <div class="card-item">
+                <p class="title">Heat Exchanger HX-301</p>
+                <p><span class="status-standby">Standby</span> • No issues</p>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <h3>Manpower Status</h3>
+            <div class="card">
+              <div class="card-item">
+                <p class="title">Operation</p>
+                <p>Present: 6, Absent: 0 (Full strength)</p>
+              </div>
+              
+              <div class="card-item">
+                <p class="title">Maintenance</p>
+                <p>Present: 3, Absent: 1 (One on leave)</p>
+              </div>
+              
+              <div class="card-item">
+                <p class="title">QC/QA</p>
+                <p>Present: 2, Absent: 0 (OK)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- New Report Panel -->
+      <div id="new-report" class="panel hide">
+        <h2>Create New Shift Report</h2>
+        
+        <form id="report-form">
+          <div class="form-row">
+            <h3>1. Basic Information</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="plant-name">Plant Name</label>
+                <input type="text" id="plant-name" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="shift">Shift</label>
+                <select id="shift" required>
+                  <option value="Morning">Morning</option>
+                  <option value="Afternoon">Afternoon</option>
+                  <option value="Night">Night</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="shift-incharge">Shift Incharge</label>
+                <input type="text" id="shift-incharge" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="prepared-by">Report Prepared By</label>
+                <input type="text" id="prepared-by" required>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <h3>2. Summary of Activities</h3>
+              <button type="button" class="btn-add">Add Row</button>
+            </div>
+            
+            <table>
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Activity</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="time" required></td>
+                  <td><input type="text" required></td>
+                  <td><input type="text"></td>
+                  <td>
+                    <select required>
+                      <option value="">Select</option>
+                      <option value="Completed">Completed</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Delayed">Delayed</option>
+                    </select>
+                  </td>
+                  <td><input type="text"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Production Data would go here -->
+          
+          <div class="form-row">
+            <h3>6. Safety and Environmental</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="safety-incidents">Safety Incidents</label>
+                <input type="text" id="safety-incidents">
+              </div>
+              
+              <div class="form-group">
+                <label for="near-misses">Near Misses</label>
+                <input type="text" id="near-misses">
+              </div>
+              
+              <div class="form-group">
+                <label for="ppe-compliance">PPE Compliance</label>
+                <input type="text" id="ppe-compliance">
+              </div>
+              
+              <div class="form-group">
+                <label for="environmental-check">Environmental Check</label>
+                <input type="text" id="environmental-check">
+              </div>
+            </div>
+          </div>
+          
+          <div style="text-align: right;">
+            <button type="submit" class="btn">Submit Report</button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Reports List Panel -->
+      <div id="reports" class="panel hide">
+        <h2>Shift Reports</h2>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>Shift</th>
+              <th>Plant</th>
+              <th>Incharge</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>22-04-2025</td>
+              <td>Morning</td>
+              <td>Example Process Plant</td>
+              <td>John Smith</td>
+              <td>
+                <button onclick="showPanel('dashboard')" style="color: #2563eb; text-decoration: underline; background: none; border: none; cursor: pointer; padding: 0;">
+                  View
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- SOP Panel -->
+      <div id="sop" class="panel hide">
+        <h2>Standard Operating Procedure</h2>
+        
+        <div class="sop-header">
+          <h3 style="margin-top: 0; margin-bottom: 8px;">Document Control</h3>
+          <div class="grid">
+            <div>
+              <p class="label">SOP Title:</p>
+              <p class="value">Process Plant Operation</p>
+            </div>
+            <div>
+              <p class="label">SOP Number:</p>
+              <p class="value">PP-001</p>
+            </div>
+            <div>
+              <p class="label">Revision Number:</p>
+              <p class="value">1.0</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="sop-section">
+          <h3>1. Purpose</h3>
+          <p>
+            To provide standard instructions for the safe and efficient operation of
+            the process plant, ensuring product quality, safety, and environmental
+            compliance.
+          </p>
+        </div>
+        
+        <div class="sop-section">
+          <h3>2. Scope</h3>
+          <p>
+            This SOP applies to all employees operating within the process plant,
+            including shift operators, supervisors, and maintenance personnel.
+          </p>
+        </div>
+        
+        <div class="sop-section">
+          <h3>3. Responsibilities</h3>
+          <ul>
+            <li><strong>Plant Manager:</strong> Overall supervision, implementation, and compliance.</li>
+            <li><strong>Shift Supervisor:</strong> Ensures all plant operations are carried out according to SOP.</li>
+            <li><strong>Operators:</strong> Perform tasks as per procedure and report abnormalities.</li>
+            <li><strong>Maintenance Team:</strong> Carry out routine maintenance and respond to issues as reported.</li>
+          </ul>
+        </div>
+        
+        <div class="sop-section">
+          <h3>6. Procedure</h3>
+          
+          <div style="margin-bottom: 16px;">
+            <h4 style="margin-bottom: 8px;">6.1 Pre-Startup Checks</h4>
+            <ol>
+              <li>Verify all maintenance jobs are completed and clearance is given.</li>
+              <li>Ensure all valves, switches, and controls are in their designated start positions.</li>
+              <li>Check levels, temperatures, and pressures on tanks and lines.</li>
+              <li>Confirm utilities (water, electricity, air, steam, etc.) are available and functional.</li>
+              <li>Wear proper PPE before entering plant premises.</li>
+            </ol>
+          </div>
+          
+          <div style="margin-bottom: 16px;">
+            <h4 style="margin-bottom: 8px;">6.2 Startup Procedure</h4>
+            <ol>
+              <li>Initiate control system (DCS/PLC).</li>
+              <li>Start utility systems (e.g., pumps, heaters, compressors) as per schedule.</li>
+              <li>Gradually introduce raw materials into the process.</li>
+              <li>Monitor key parameters continuously (flow, temperature, pressure, etc.).</li>
+              <li>Log readings and report any abnormality to the supervisor.</li>
+            </ol>
+          </div>
+          
+          <div style="margin-bottom: 16px;">
+            <h4 style="margin-bottom: 8px;">6.3 Normal Operation</h4>
+            <ol>
+              <li>Maintain process conditions as per SOP or production sheet.</li>
+              <li>Perform regular sampling and quality control checks.</li>
+              <li>Keep area clean and organized (5S principles).</li>
+              <li>Report equipment faults or process deviations immediately.</li>
+            </ol>
+          </div>
+          
+          <div style="margin-bottom: 16px;">
+            <h4 style="margin-bottom: 8px;">6.4 Shutdown Procedure</h4>
+            <ol>
+              <li>Gradually stop raw material feed.</li>
+              <li>Shut down equipment in a reverse sequence of the startup.</li>
+              <li>Depressurize and drain lines as per safety standards.</li>
+              <li>Log all shutdown activities.</li>
+              <li>Perform post-shutdown inspection and housekeeping.</li>
+            </ol>
+          </div>
+        </div>
+        
+        <div class="sop-section">
+          <h3>7. Emergency Procedures</h3>
+          <ul>
+            <li>Follow the Emergency Response Plan for situations like fire, gas leak, chemical spill, power failure.</li>
+            <li>Use emergency shutdown (ESD) procedures if needed.</li>
+            <li>Evacuate to assembly point and report to safety officer.</li>
+          </ul>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <script>
+    // Simple panel navigation
+    function showPanel(panelId) {
+      // Hide all panels
+      const panels = document.querySelectorAll('.panel');
+      panels.forEach(panel => {
+        panel.classList.add('hide');
+      });
+      
+      // Show the selected panel
+      document.getElementById(panelId).classList.remove('hide');
+      
+      // Update active button
+      const buttons = document.querySelectorAll('nav button');
+      buttons.forEach(button => {
+        button.classList.remove('active');
+      });
+      
+      // Get the current button and set it as active
+      const currentButton = Array.from(buttons).find(
+        button => button.innerHTML.toLowerCase().includes(panelId)
+      );
+      if (currentButton) {
+        currentButton.classList.add('active');
+      }
+    }
+    
+    // Handle form submission
+    document.getElementById('report-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Report submitted successfully!');
+      showPanel('dashboard');
+    });
+  </script>
+</body>
+</html>
